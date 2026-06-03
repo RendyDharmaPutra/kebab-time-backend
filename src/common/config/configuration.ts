@@ -6,14 +6,14 @@ const getEnv = (key: string): string => {
 };
 
 export default () => ({
+  node_env: getEnv('NODE_ENV'),
   port: parseInt(getEnv('PORT'), 10),
 
-  // ? info comment for temporary until implementing database
-  //   database: {
-  //     host: getEnv('DB_HOST'),
-  //     port: parseInt(getEnv('DB_PORT'), 10),
-  //     username: getEnv('DB_USER'),
-  //     password: getEnv('DB_PASSWORD'),
-  //     name: getEnv('DB_NAME'),
-  //   },
+  database: {
+    host: getEnv('DB_HOST'),
+    port: parseInt(getEnv('DB_PORT'), 10),
+    username: getEnv('DB_USER'),
+    password: getEnv('DB_PASSWORD'),
+    name: getEnv('DB_NAME'),
+  },
 });
