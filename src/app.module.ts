@@ -4,6 +4,11 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './common/config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthsModule } from './auths/auths.module';
+import { StaffsModule } from './staffs/staffs.module';
+import { RolesModule } from './roles/roles.module';
+import { SuppliersModule } from './suppliers/suppliers.module';
+import { CustomersModule } from './customers/customers.module';
 
 @Module({
   imports: [
@@ -28,6 +33,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         synchronize: true,
       }),
     }),
+    AuthsModule,
+    StaffsModule,
+    RolesModule,
+    SuppliersModule,
+    CustomersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
