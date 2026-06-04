@@ -1,9 +1,11 @@
+import { Customer } from 'src/customers/customer.entity';
 import { Role } from 'src/roles/role.entity';
 import {
   Column,
   Entity,
   Index,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -21,4 +23,7 @@ export class Auth {
 
   @ManyToOne(() => Role, (role) => role.auths)
   role: Role;
+
+  @OneToMany(() => Customer, (customer) => customer.auth)
+  customers: Customer[];
 }
