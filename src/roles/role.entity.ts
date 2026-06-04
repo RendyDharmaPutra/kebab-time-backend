@@ -1,10 +1,21 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Auth } from 'src/auths/auth.entity';
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('Roles')
 export class Role {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @Column({ nullable: false, type: 'varchar', unique: true })
+  @Index({ unique: true })
+  @Column()
   name: string;
+
+  @OneToMany(() => Auth, (auth) => auth.role)
+  auths: Auth[];
 }

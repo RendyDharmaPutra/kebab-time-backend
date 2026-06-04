@@ -31,6 +31,8 @@ import { CustomersModule } from './customers/customers.module';
         entities: [__dirname + '/**/*.entity.{ts,js}'],
         autoLoadEntities: true,
         synchronize: true,
+
+        logging: true,
       }),
     }),
     AuthsModule,
