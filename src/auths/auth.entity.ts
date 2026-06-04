@@ -1,6 +1,7 @@
 import { Customer } from 'src/customers/customer.entity';
 import { Role } from 'src/roles/role.entity';
 import { Staff } from 'src/staffs/staff.entity';
+import { Supplier } from 'src/suppliers/supplier.entity';
 import {
   Column,
   Entity,
@@ -30,4 +31,7 @@ export class Auth {
 
   @OneToMany(() => Staff, (staff) => staff.auth)
   staffs: Staff[];
+
+  @OneToMany(() => Supplier, (supplier) => supplier.auth)
+  suppliers: Supplier[];
 }
