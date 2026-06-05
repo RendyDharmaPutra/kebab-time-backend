@@ -5,11 +5,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from 'src/roles/role.entity';
 import { Repository } from 'typeorm';
 import { RoleName } from 'src/roles/role-enum';
+import { AuthsService } from 'src/auths/auths.service';
 
 @Injectable()
 export class StaffsService {
   constructor(
     private readonly passwordService: PasswordService,
+    private readonly authsService: AuthsService,
 
     @InjectRepository(Role)
     private readonly roleRepo: Repository<Role>,
@@ -27,6 +29,17 @@ export class StaffsService {
 
     const role = await this.roleRepo.findOneBy({ name: RoleName.STAFF });
     this.logger.debug(`Role: ${JSON.stringify(role)}`);
+
+    const credential = {
+      email: dto.email,
+      password: rawPassword,
+      roleId: role.id,
+    };
+    const credentialResult =
+      await this.authsService.createCredential(credential);
+    this.logger.debug(
+      `Credential Saved Result: ${JSON.stringify(credentialResult)}`,
+    );
 
     return 'Create Staff Service';
   }
