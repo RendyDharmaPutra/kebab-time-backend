@@ -6,6 +6,7 @@ import { Role } from 'src/roles/role.entity';
 import { Repository } from 'typeorm';
 import { RoleName } from 'src/roles/role-enum';
 import { AuthsService } from 'src/auths/auths.service';
+import { Staff } from './staff.entity';
 
 @Injectable()
 export class StaffsService {
@@ -15,6 +16,9 @@ export class StaffsService {
 
     @InjectRepository(Role)
     private readonly roleRepo: Repository<Role>,
+
+    @InjectRepository(Staff)
+    private readonly staffRepo: Repository<Staff>,
   ) {}
   private readonly logger = new Logger(StaffsService.name);
 
@@ -41,6 +45,15 @@ export class StaffsService {
       `Credential Saved Result: ${JSON.stringify(credentialResult)}`,
     );
 
-    return 'Create Staff Service';
+    const staff = this.staffRepo.create({
+      fullname: dto.fullname,
+      address: dto.address,
+      phone: dto.phone,
+      auth: credentialResult,
+    });
+    const staffResult = await this.staffRepo.save(staff);
+    this.logger.debug(`Staff Saved Result: ${JSON.stringify(staffResult)}`);
+
+    return 'Staff Created Successfully';
   }
 }

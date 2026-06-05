@@ -5,9 +5,10 @@ import { PasswordService } from 'src/common/services/password.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Role } from 'src/roles/role.entity';
 import { AuthsModule } from 'src/auths/auths.module';
+import { Staff } from './staff.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Role]), AuthsModule],
+  imports: [TypeOrmModule.forFeature([Role, Staff]), AuthsModule],
   providers: [StaffsService, PasswordService],
   controllers: [StaffsController],
 })
