@@ -37,7 +37,7 @@ export class StaffsService {
     const credential = {
       email: dto.email,
       password: rawPassword,
-      roleId: role.id,
+      role,
     };
     const credentialResult =
       await this.authsService.createCredential(credential);

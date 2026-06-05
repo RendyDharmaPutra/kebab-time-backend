@@ -14,7 +14,7 @@ export class AuthsService {
   async createCredential(credential: {
     email: string;
     password: string;
-    roleId: number;
+    role: Role;
   }) {
     this.logger.log('Create Credential Service');
     this.logger.debug(`Credential: ${JSON.stringify(credential)}`);
@@ -34,7 +34,7 @@ export class AuthsService {
           throw new HttpException(
             {
               code: 'AUTH_EMAIL_DUPLICATED',
-              message: 'Email sudah terdaftar',
+              message: 'Email already registered',
             },
             HttpStatus.BAD_REQUEST,
           );
