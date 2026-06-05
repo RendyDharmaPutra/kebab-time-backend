@@ -2,10 +2,14 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Auth } from './auth.entity';
 import { QueryFailedError, Repository } from 'typeorm';
+import { PasswordService } from 'src/common/services/password.service';
+import { Role } from 'src/roles/role.entity';
 
 @Injectable()
 export class AuthsService {
   constructor(
+    private readonly passwordService: PasswordService,
+
     @InjectRepository(Auth)
     private readonly authRepo: Repository<Auth>,
   ) {}
@@ -19,9 +23,15 @@ export class AuthsService {
     this.logger.log('Create Credential Service');
     this.logger.debug(`Credential: ${JSON.stringify(credential)}`);
 
+    const hashedPassword = await this.passwordService.hash(credential.password);
+    this.logger.debug(`Hashed Password: ${hashedPassword}`);
+
     try {
-      const newCredential = this.authRepo.create(credential);
-      return await this.authRepo.save(newCredential);
+      const credentialResult = this.authRepo.create({
+        ...credential,
+        password: hashedPassword,
+      });
+      return await this.authRepo.save(credentialResult);
     } catch (error) {
       this.logger.error('Credential Save Failed', error);
 
