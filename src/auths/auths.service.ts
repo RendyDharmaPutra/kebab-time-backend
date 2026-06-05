@@ -5,6 +5,7 @@ import { QueryFailedError, Repository } from 'typeorm';
 import { PasswordService } from 'src/common/services/password.service';
 import { Role } from 'src/roles/role.entity';
 import { RegisterDto } from './register.dto';
+import { RoleName } from 'src/roles/role-enum';
 
 @Injectable()
 export class AuthsService {
@@ -13,6 +14,9 @@ export class AuthsService {
 
     @InjectRepository(Auth)
     private readonly authRepo: Repository<Auth>,
+
+    @InjectRepository(Role)
+    private readonly roleRepo: Repository<Role>,
   ) {}
   private readonly logger = new Logger(AuthsService.name);
 
@@ -70,6 +74,19 @@ export class AuthsService {
         },
         HttpStatus.BAD_REQUEST,
       );
+
+    const role = await this.roleRepo.findOneBy({ name: RoleName.CUSTOMER });
+    this.logger.debug(`Role: ${JSON.stringify(role)}`);
+
+    const credential = {
+      email: dto.email,
+      password: dto.password,
+      role,
+    };
+    const credentialResult = await this.createCredential(credential);
+    this.logger.debug(
+      `Credential Saved Result: ${JSON.stringify(credentialResult)}`,
+    );
 
     return 'Success Registering Customer';
   }
