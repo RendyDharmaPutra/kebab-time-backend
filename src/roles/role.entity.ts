@@ -10,7 +10,7 @@ import {
 @Entity('Roles')
 export class Role {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Index({ unique: true })
   @Column()
