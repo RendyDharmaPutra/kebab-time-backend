@@ -4,6 +4,7 @@ import { Auth } from './auth.entity';
 import { QueryFailedError, Repository } from 'typeorm';
 import { PasswordService } from 'src/common/services/password.service';
 import { Role } from 'src/roles/role.entity';
+import { RegisterDto } from './register.dto';
 
 @Injectable()
 export class AuthsService {
@@ -55,5 +56,12 @@ export class AuthsService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  async register(dto: RegisterDto) {
+    this.logger.log('Register Service');
+    this.logger.debug(`Register DTO: ${JSON.stringify(dto)}`);
+
+    return 'Success Registering Customer';
   }
 }
