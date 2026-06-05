@@ -62,6 +62,15 @@ export class AuthsService {
     this.logger.log('Register Service');
     this.logger.debug(`Register DTO: ${JSON.stringify(dto)}`);
 
+    if (dto.password !== dto.confirmPassword)
+      throw new HttpException(
+        {
+          code: 'AUTH_PASSWORD_MISMATCH',
+          message: 'Password does not match',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+
     return 'Success Registering Customer';
   }
 }
