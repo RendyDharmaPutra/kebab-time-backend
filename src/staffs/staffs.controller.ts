@@ -9,11 +9,11 @@ export class StaffsController {
   private readonly logger = new Logger(StaffsController.name);
 
   @Post()
-  create(@Body() createStaffDto: CreateStaffDto) {
+  async create(@Body() createStaffDto: CreateStaffDto) {
     this.logger.log('Create Staff Controller');
     this.logger.debug('Create Staff DTO: ', createStaffDto);
 
-    const message = this.staffsService.createStaff();
+    const message = await this.staffsService.createStaff(createStaffDto);
     this.logger.debug(`Message from service: ${message}`);
 
     return message;

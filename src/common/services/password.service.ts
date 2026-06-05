@@ -10,4 +10,10 @@ export class PasswordService {
   async compare(password: string, hash: string): Promise<boolean> {
     return bcrypt.compare(password, hash);
   }
+
+  async generateUserPassword(email: string, phone: string): Promise<string> {
+    const [emailPrefix] = email.split('@');
+
+    return `${emailPrefix}${phone.slice(-6)}`;
+  }
 }
