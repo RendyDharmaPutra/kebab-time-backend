@@ -7,6 +7,7 @@ import { Role } from 'src/roles/role.entity';
 import { RegisterDto } from './register.dto';
 import { RoleName } from 'src/roles/role-enum';
 import { CustomersService } from 'src/customers/customers.service';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthsService {
@@ -93,5 +94,30 @@ export class AuthsService {
     );
 
     return 'Success Registering Customer';
+  }
+
+  async login(dto: LoginDto) {
+    this.logger.log('Login Service');
+    this.logger.debug(`Login DTO: ${JSON.stringify(dto)}`);
+
+    const credential = await this.authRepo.findOneBy({ email: dto.email });
+    this.logger.debug(`Credential: ${JSON.stringify(credential)}`);
+
+    const isPasswordValid = await this.passwordService.compare(
+      dto.password,
+      credential.password,
+    );
+    this.logger.debug(`Password Validation: ${isPasswordValid}`);
+
+    if (!isPasswordValid)
+      throw new HttpException(
+        {
+          code: 'AUTH_PASSWORD_MISMATCH',
+          message: 'Password does not match',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+
+    return 'Success Logging In';
   }
 }

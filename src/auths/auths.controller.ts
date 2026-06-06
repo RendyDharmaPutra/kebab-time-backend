@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { AuthsService } from './auths.service';
 import { RegisterDto } from './register.dto';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('auths')
 export class AuthsController {
@@ -30,6 +31,17 @@ export class AuthsController {
       );
 
     const message = await this.authsService.register(registerDto);
+    this.logger.debug(`Message from service: ${message}`);
+
+    return message;
+  }
+
+  @Post('login')
+  async login(@Body() loginDto: LoginDto) {
+    this.logger.log('Login Controller');
+    this.logger.debug('Login DTO: ', loginDto);
+
+    const message = await this.authsService.login(loginDto);
     this.logger.debug(`Message from service: ${message}`);
 
     return message;
