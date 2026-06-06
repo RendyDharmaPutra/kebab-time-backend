@@ -6,11 +6,13 @@ import { PasswordService } from 'src/common/services/password.service';
 import { Role } from 'src/roles/role.entity';
 import { RegisterDto } from './register.dto';
 import { RoleName } from 'src/roles/role-enum';
+import { CustomersService } from 'src/customers/customers.service';
 
 @Injectable()
 export class AuthsService {
   constructor(
     private readonly passwordService: PasswordService,
+    private readonly customerService: CustomersService,
 
     @InjectRepository(Auth)
     private readonly authRepo: Repository<Auth>,
@@ -86,6 +88,17 @@ export class AuthsService {
     const credentialResult = await this.createCredential(credential);
     this.logger.debug(
       `Credential Saved Result: ${JSON.stringify(credentialResult)}`,
+    );
+
+    const customer = {
+      fullname: dto.fullname,
+      address: dto.address,
+      phone: dto.phone,
+      auth: credentialResult,
+    };
+    const customerResult = await this.customerService.createCustomer(customer);
+    this.logger.debug(
+      `Customer Saved Result: ${JSON.stringify(customerResult)}`,
     );
 
     return 'Success Registering Customer';
