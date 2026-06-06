@@ -100,7 +100,20 @@ export class AuthsService {
     this.logger.log('Login Service');
     this.logger.debug(`Login DTO: ${JSON.stringify(dto)}`);
 
-    const credential = await this.authRepo.findOneBy({ email: dto.email });
+    const credential = await this.authRepo.findOne({
+      where: { email: dto.email },
+      relations: { role: true },
+    });
+
+    if (!credential)
+      throw new HttpException(
+        {
+          code: 'AUTH_CREDENTIAL_NOT_FOUND',
+          message: 'Credential not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+
     this.logger.debug(`Credential: ${JSON.stringify(credential)}`);
 
     const isPasswordValid = await this.passwordService.compare(
