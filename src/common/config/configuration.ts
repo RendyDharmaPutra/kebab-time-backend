@@ -8,6 +8,7 @@ const getEnv = (key: string): string => {
 export default () => ({
   node_env: getEnv('NODE_ENV'),
   port: parseInt(getEnv('PORT'), 10),
+  jwt_secret: getEnv('JWT_SECRET'),
 
   database: {
     host: getEnv('DB_HOST'),
