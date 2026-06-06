@@ -8,12 +8,15 @@ import { RegisterDto } from './register.dto';
 import { RoleName } from 'src/roles/role-enum';
 import { CustomersService } from 'src/customers/customers.service';
 import { LoginDto } from './dto/login.dto';
+import { JwtService } from '@nestjs/jwt';
+import { JwtPayloadInterface } from './interfaces/jwt-payload.interface';
 
 @Injectable()
 export class AuthsService {
   constructor(
     private readonly passwordService: PasswordService,
     private readonly customerService: CustomersService,
+    private readonly jwtService: JwtService,
 
     @InjectRepository(Auth)
     private readonly authRepo: Repository<Auth>,
@@ -131,6 +134,15 @@ export class AuthsService {
         HttpStatus.BAD_REQUEST,
       );
 
-    return 'Success Logging In';
+    const payload: JwtPayloadInterface = {
+      sub: credential.id,
+      email: credential.email,
+      role: credential.role.name,
+    };
+    this.logger.debug(`Payload: ${JSON.stringify(payload)}`);
+
+    return {
+      token: await this.jwtService.signAsync(payload),
+    };
   }
 }
