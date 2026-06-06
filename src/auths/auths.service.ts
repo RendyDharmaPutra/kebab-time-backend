@@ -4,7 +4,7 @@ import { Auth } from './auth.entity';
 import { QueryFailedError, Repository } from 'typeorm';
 import { PasswordService } from 'src/common/services/password.service';
 import { Role } from 'src/roles/role.entity';
-import { RegisterDto } from './register.dto';
+import { RegisterDto } from './dto/register.dto';
 import { RoleName } from 'src/roles/role-enum';
 import { CustomersService } from 'src/customers/customers.service';
 import { LoginDto } from './dto/login.dto';
