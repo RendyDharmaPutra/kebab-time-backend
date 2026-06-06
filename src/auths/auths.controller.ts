@@ -1,4 +1,11 @@
-import { Controller, Logger, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Logger,
+  Post,
+  Body,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
 import { AuthsService } from './auths.service';
 import { RegisterDto } from './register.dto';
 
@@ -12,6 +19,15 @@ export class AuthsController {
   async register(@Body() registerDto: RegisterDto) {
     this.logger.log('Register Controller');
     this.logger.debug('Register DTO: ', registerDto);
+
+    if (registerDto.password !== registerDto.confirmPassword)
+      throw new HttpException(
+        {
+          code: 'AUTH_PASSWORD_MISMATCH',
+          message: 'Password does not match',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
 
     const message = await this.authsService.register(registerDto);
     this.logger.debug(`Message from service: ${message}`);

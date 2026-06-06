@@ -68,15 +68,6 @@ export class AuthsService {
     this.logger.log('Register Service');
     this.logger.debug(`Register DTO: ${JSON.stringify(dto)}`);
 
-    if (dto.password !== dto.confirmPassword)
-      throw new HttpException(
-        {
-          code: 'AUTH_PASSWORD_MISMATCH',
-          message: 'Password does not match',
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-
     const role = await this.roleRepo.findOneBy({ name: RoleName.CUSTOMER });
     this.logger.debug(`Role: ${JSON.stringify(role)}`);
 
