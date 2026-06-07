@@ -14,9 +14,9 @@ import { JwtPayloadInterface } from './interfaces/jwt-payload.interface';
 @Injectable()
 export class AuthsService {
   constructor(
+    private readonly jwtService: JwtService,
     private readonly passwordService: PasswordService,
     private readonly customerService: CustomersService,
-    private readonly jwtService: JwtService,
 
     @InjectRepository(Auth)
     private readonly authRepo: Repository<Auth>,
@@ -144,5 +144,103 @@ export class AuthsService {
     return {
       token: await this.jwtService.signAsync(payload),
     };
+  }
+
+  async getCurrentUser(currentUser: JwtPayloadInterface) {
+    this.logger.log('Get Current User Service');
+    this.logger.debug(`Current User: ${JSON.stringify(currentUser)}`);
+
+    const queryRelations = {
+      role: true,
+      staffs: false,
+      customers: false,
+      suppliers: false,
+    };
+
+    switch (currentUser.role) {
+      case RoleName.OWNER:
+      case RoleName.STAFF:
+        this.logger.debug(`Staff or Owner Role`);
+
+        queryRelations.staffs = true;
+        break;
+
+      case RoleName.CUSTOMER:
+        this.logger.debug(`Customer Role`);
+
+        queryRelations.customers = true;
+        break;
+
+      case RoleName.SUPPLIER:
+        this.logger.debug(`Supplier Role`);
+
+        queryRelations.suppliers = true;
+        break;
+
+      default:
+        this.logger.debug(`Undefined Role`);
+        break;
+    }
+
+    try {
+      const result = await this.authRepo.findOne({
+        where: { id: currentUser.sub },
+        relations: queryRelations,
+        select: {
+          id: true,
+          email: true,
+          role: { name: true },
+          staffs: {
+            fullname: true,
+            phone: true,
+            address: true,
+          },
+          customers: {
+            fullname: true,
+            phone: true,
+            address: true,
+          },
+          suppliers: {
+            name: true,
+            phone: true,
+            address: true,
+          },
+        },
+      });
+
+      const staff = result.staffs?.[0];
+      const customer = result.customers?.[0];
+      const supplier = result.suppliers?.[0];
+
+      return {
+        user: {
+          id: result.id,
+          email: result.email,
+          role: result.role.name,
+          ...(staff && {
+            fullname: staff.fullname,
+            phone: staff.phone,
+            address: staff.address,
+          }),
+          ...(customer && {
+            fullname: customer.fullname,
+            phone: customer.phone,
+            address: customer.address,
+          }),
+          ...(supplier && {
+            name: supplier.name,
+            phone: supplier.phone,
+            address: supplier.address,
+          }),
+        },
+      };
+    } catch (error) {
+      this.logger.error('Get Current User Failed', error);
+
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
