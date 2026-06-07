@@ -9,6 +9,7 @@ import {
 import { AuthsService } from './auths.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('auths')
 export class AuthsController {
@@ -16,6 +17,7 @@ export class AuthsController {
 
   private readonly logger = new Logger(AuthsController.name);
 
+  @Public()
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
     this.logger.log('Register Controller');
@@ -36,6 +38,7 @@ export class AuthsController {
     return message;
   }
 
+  @Public()
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
     this.logger.log('Login Controller');

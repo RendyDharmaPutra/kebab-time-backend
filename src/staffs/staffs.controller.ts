@@ -1,6 +1,8 @@
-import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
+import { Body, Controller, Logger, Post } from '@nestjs/common';
 import { StaffsService } from './staffs.service';
 import { CreateStaffDto } from './create-staff.dto';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { RoleName } from 'src/roles/role-enum';
 
 @Controller('staffs')
 export class StaffsController {
@@ -9,6 +11,7 @@ export class StaffsController {
   private readonly logger = new Logger(StaffsController.name);
 
   @Post()
+  @Roles(RoleName.OWNER)
   async create(@Body() createStaffDto: CreateStaffDto) {
     this.logger.log('Create Staff Controller');
     this.logger.debug('Create Staff DTO: ', createStaffDto);
