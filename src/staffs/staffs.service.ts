@@ -22,6 +22,24 @@ export class StaffsService {
   ) {}
   private readonly logger = new Logger(StaffsService.name);
 
+  async getListStaffs() {
+    this.logger.log('Get List Staffs Service');
+
+    const result = await this.staffRepo.find({
+      relations: {
+        auth: true,
+      },
+      select: {
+        auth: {
+          email: true,
+        },
+      },
+    });
+    this.logger.debug(`List Staffs: ${JSON.stringify(result)}`);
+
+    return result;
+  }
+
   async createStaff(dto: CreateStaffDto) {
     this.logger.log('Create Staff Service');
 
