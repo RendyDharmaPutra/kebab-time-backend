@@ -23,6 +23,24 @@ export class SuppliersService {
 
   private readonly logger = new Logger(SuppliersService.name);
 
+  async getListSuppliers() {
+    this.logger.log('Get List Suppliers Service');
+
+    const result = await this.supplierRepo.find({
+      relations: {
+        auth: true,
+      },
+      select: {
+        auth: {
+          email: true,
+        },
+      },
+    });
+    this.logger.debug(`List Suppliers: ${JSON.stringify(result)}`);
+
+    return result;
+  }
+
   async createSupplier(dto: CreateSupplierDto) {
     this.logger.log('Create Supplier Service');
 

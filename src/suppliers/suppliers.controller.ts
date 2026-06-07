@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Logger } from '@nestjs/common';
+import { Controller, Post, Body, Logger, Get } from '@nestjs/common';
 import { SuppliersService } from './suppliers.service';
 import { CreateSupplierDto } from './create-supplier.dto';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -9,6 +9,17 @@ export class SuppliersController {
   constructor(private readonly suppliersService: SuppliersService) {}
 
   private readonly logger = new Logger(SuppliersController.name);
+
+  @Get()
+  @Roles(RoleName.OWNER)
+  async list() {
+    this.logger.log('Get List Suppliers Controller');
+
+    const message = await this.suppliersService.getListSuppliers();
+    this.logger.debug(`Message from service: ${message}`);
+
+    return message;
+  }
 
   @Post()
   @Roles(RoleName.OWNER)
