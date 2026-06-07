@@ -12,6 +12,24 @@ export class CustomersService {
   ) {}
   private readonly logger = new Logger(CustomersService.name);
 
+  async getListCustomers() {
+    this.logger.log('Get List Customers Service');
+
+    const result = await this.customerRepo.find({
+      relations: {
+        auth: true,
+      },
+      select: {
+        auth: {
+          email: true,
+        },
+      },
+    });
+    this.logger.debug(`List Customers: ${JSON.stringify(result)}`);
+
+    return result;
+  }
+
   async createCustomer(customerData: {
     fullname: string;
     address: string;
